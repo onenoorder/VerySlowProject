@@ -1,0 +1,19 @@
+services:
+  # Runs the benchmark: `docker compose run --rm watersim [case ...]`
+  watersim:
+    build: .
+    image: watersim:latest
+    volumes:
+      - .:/app
+      # keep the host's (Windows) virtualenv out of the container
+      - /app/.venv
+
+  # Runs the test suite: `docker compose run --rm tests`
+  tests:
+    image: watersim:latest
+    build: .
+    entrypoint: ["python", "-m", "pytest", "-p", "no:cacheprovider"]
+    volumes:
+      - .:/app
+      - /app/.venv
+    profiles: ["test"]
